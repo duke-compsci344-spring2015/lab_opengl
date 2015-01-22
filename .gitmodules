@@ -1,0 +1,3 @@
+[submodule "jogl_framework"]
+	path = jogl_framework
+	url = https://github.com/duke-compsci344-spring2015/jogl_framework
