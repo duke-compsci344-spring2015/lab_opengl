@@ -39,13 +39,13 @@ public class Simple extends Scene {
     @Override
     public void display (GL2 gl, GLU glu, GLUT glut) {
         // define object's color
-        gl.glColor3f(1.0f, 0.0f, 1.0f);
+        gl.glColor3d(1.0, 0.0, 1.0);
         // rotate object about y-axis
-        gl.glRotatef(myAngle, 0.0f, 1.0f, 0.0f);
+        gl.glRotated(myAngle, 0.0, 1.0, 0.0);
         // draw object as wire teapot
         glut.glutSolidCube(1);
         // define object's color
-        gl.glColor3f(1.0f, 1.0f, 1.0f);
+        gl.glColor3d(1.0, 1.0, 1.0);
         // draw object as wire teapot
         glut.glutWireCube(1);
     }
