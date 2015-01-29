@@ -1,2 +1,2 @@
 # lab_opengl
-First lab
+Lab example and starter code.
