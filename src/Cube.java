@@ -20,16 +20,16 @@ public class Cube extends Scene {
     public void display (GL2 gl, GLU glu, GLUT glut) {
         double[] mat = new double[16];
 
-        gl.glTranslated(0.0, 0.0, -1.0);
+        gl.glTranslatef(0.0f, 0.0f, -1.0f);
         gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, mat, 0);
-        Printer.printMatrix("After translate:", mat);
-        gl.glRotated(60, 0.0, 1.0, 0.0);
+        Printer.printMatrix("After glTranslatef:", mat);
+        gl.glRotatef(60, 0.0f, 1.0f, 0.0f);
         gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, mat, 0);
-        Printer.printMatrix("After rotate:", mat);
-        gl.glScaled(2.0, 2.0, 2.0);
+        Printer.printMatrix("After glRotatef:", mat);
+        gl.glScalef(2.0f, 2.0f, 2.0f);
         gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, mat, 0);
-        Printer.printMatrix("After scale:", mat);
-        gl.glColor3d(1.0, 1.0, 1.0);
+        Printer.printMatrix("After glScalef:", mat);
+        gl.glColor3f(1.0f, 1.0f, 1.0f);
         glut.glutWireCube(1);
 
         Printer.printPoints(gl, glu);
@@ -38,18 +38,17 @@ public class Cube extends Scene {
     public void setCamera (GL2 gl, GLU glu, GLUT glut) {
         int[] vec = new int[4];
         gl.glGetIntegerv(GL2.GL_VIEWPORT, vec, 0);
-        Printer.printVector("Viewport:", vec);
+        Printer.printVector("After glViewport:", vec);
 
         double[] mat = new double[16];
         gl.glGetDoublev(GL2.GL_PROJECTION_MATRIX, mat, 0);
-        Printer.printMatrix("Perspective:", mat);
+        Printer.printMatrix("After gluPerspective:", mat);
 
         glu.gluLookAt(0, 2, 4, // from position
                       0, 0, 0, // to position
                       0, 1, 0); // up direction
-
         gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, mat, 0);
-        Printer.printMatrix("After lookat:", mat);
+        Printer.printMatrix("After gluLookAt:", mat);
     }
 
 
