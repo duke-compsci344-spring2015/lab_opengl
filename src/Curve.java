@@ -1,7 +1,13 @@
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
+
 import com.jogamp.opengl.util.gl2.GLUT;
+
 import framework.JOGLFrame;
 import framework.Scene;
 import framework.Spline;
@@ -32,6 +38,9 @@ public class Curve extends Scene {
     };
 
     private int myAngle;
+    private float myTime;
+    private float mySpeed;
+    private float myResolution;
     private Spline myCurve;
     private boolean showControlPoints;
 
@@ -41,6 +50,24 @@ public class Curve extends Scene {
      */
     public Curve (String[] args) {
         super("Drawing Curves");
+        myAngle = 0;
+        myTime = 0;
+        myResolution = 1;
+        mySpeed = 0.2f;
+        showControlPoints = false;
+        try {
+            myCurve = new Spline();
+            Scanner input = new Scanner(new File(args[0]));
+            input.nextLine();  // read starting comment
+            while (input.hasNextLine()) {
+                Scanner line = new Scanner(input.nextLine());
+                myCurve.addPoint(line.nextFloat(), line.nextFloat(), line.nextFloat());
+            }
+            input.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     /**
@@ -48,13 +75,11 @@ public class Curve extends Scene {
      */
     @Override
     public void init (GL2 gl, GLU glu, GLUT glut) {
-        myAngle = 0;
-        showControlPoints = false;
         gl.glEnable(GL2.GL_MAP1_VERTEX_3);
-        myCurve = new Spline();
-        for (int k = 0; k < CONTROL_POINTS.length; k += 3) {
-            myCurve.addPoint(CONTROL_POINTS[k], CONTROL_POINTS[k+1], CONTROL_POINTS[k+2]);
-        }
+        //myCurve = new Spline();
+        //for (int k = 0; k < CONTROL_POINTS.length; k += 3) {
+        //    myCurve.addPoint(CONTROL_POINTS[k], CONTROL_POINTS[k+1], CONTROL_POINTS[k+2]);
+        //}
     }
 
     /**
@@ -79,7 +104,7 @@ public class Curve extends Scene {
         }
         gl.glEnd();
         // draw spline
-        myCurve.draw(gl, 0.2f);
+        myCurve.draw(gl, myResolution);
         // draw control points
         if (showControlPoints) {
             gl.glPointSize(5);
@@ -87,6 +112,9 @@ public class Curve extends Scene {
             myCurve.drawControlPoints(gl);
         }
         // TODO: move an object along the spline
+        float[] pt = myCurve.evaluateAt(myTime);
+        gl.glTranslatef(pt[0], pt[1], pt[2]);
+        glut.glutSolidTeapot(2);
     }
 
     /**
@@ -107,6 +135,7 @@ public class Curve extends Scene {
     @Override
     public void animate (GL2 gl, GLU glu, GLUT glut) {
         myAngle += 2;
+        myTime += mySpeed;
     }
 
     /**
@@ -117,6 +146,20 @@ public class Curve extends Scene {
         switch (keyCode) {
           case KeyEvent.VK_C:
             showControlPoints = ! showControlPoints;
+            break;
+          case KeyEvent.VK_PERIOD:
+            mySpeed += 0.1f;
+            break;
+          case KeyEvent.VK_COMMA:
+            mySpeed -= 0.01f;
+            break;
+          case KeyEvent.VK_OPEN_BRACKET:
+            if (myResolution > 0.1)
+                myResolution /= 2;
+            break;
+          case KeyEvent.VK_CLOSE_BRACKET:
+            if (myResolution < 4)
+                myResolution *= 2;
             break;
         }
     }
