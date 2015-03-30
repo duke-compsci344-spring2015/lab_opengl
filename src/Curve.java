@@ -1,13 +1,7 @@
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
-
 import com.jogamp.opengl.util.gl2.GLUT;
-
 import framework.JOGLFrame;
 import framework.Scene;
 import framework.Spline;
@@ -55,19 +49,7 @@ public class Curve extends Scene {
         myResolution = 1;
         mySpeed = 0.2f;
         showControlPoints = false;
-        try {
-            myCurve = new Spline();
-            Scanner input = new Scanner(new File(args[0]));
-            input.nextLine();  // read starting comment
-            while (input.hasNextLine()) {
-                Scanner line = new Scanner(input.nextLine());
-                myCurve.addPoint(line.nextFloat(), line.nextFloat(), line.nextFloat());
-            }
-            input.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
+        myCurve = args.length > 0 ? new Spline(args[0]) : new Spline(CONTROL_POINTS);
     }
 
     /**
@@ -76,10 +58,6 @@ public class Curve extends Scene {
     @Override
     public void init (GL2 gl, GLU glu, GLUT glut) {
         gl.glEnable(GL2.GL_MAP1_VERTEX_3);
-        //myCurve = new Spline();
-        //for (int k = 0; k < CONTROL_POINTS.length; k += 3) {
-        //    myCurve.addPoint(CONTROL_POINTS[k], CONTROL_POINTS[k+1], CONTROL_POINTS[k+2]);
-        //}
     }
 
     /**
