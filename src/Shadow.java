@@ -41,7 +41,7 @@ public class Shadow extends Scene {
         super("Shadow");
         myAngle = 0;
         myObjectAngle = 0;
-        myShadowsOn = false;
+        myShadowsOn = true;
         myCameraView = true;
         myRotateObject = true;
         myLightPos = LIGHT_LOC;
@@ -53,6 +53,8 @@ public class Shadow extends Scene {
     @Override
     public void display (GL2 gl, GLU glu, GLUT glut) {
         // rotate entire scene
+        gl.glRotatef(myAngle, 0, 1, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, myLightPos, 0);
         if (myShadowsOn) {
             shadows(gl, glu, glut, myLightPos);
         } else {
@@ -69,12 +71,9 @@ public class Shadow extends Scene {
             glu.gluLookAt(0, 0, 5,  // from position
                           0, 0, 0,  // to position
                           0, 1, 0); // up direction
-            gl.glRotatef(myAngle, 0, 1, 0);
         }
         else {
-            gl.glTranslatef(myLightPos[0], myLightPos[1], myLightPos[2]);
-            gl.glRotatef(myAngle, 0, 1, 0);
-            glu.gluLookAt(0, 0, 1, 
+            glu.gluLookAt(myLightPos[0], myLightPos[1], myLightPos[2], 
                           0, 0, 0, 
                           0, 1, 0);
         }
@@ -100,7 +99,6 @@ public class Shadow extends Scene {
         gl.glEnable(GL2.GL_LIGHT0);
         gl.glEnable(GL2.GL_COLOR_MATERIAL);
         gl.glShadeModel(GL2.GL_SMOOTH);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, myLightPos, 0);
     }
 
     /**
@@ -188,8 +186,9 @@ public class Shadow extends Scene {
             // disable drawing into color buffer
             gl.glDrawBuffer(GL2.GL_NONE);
             // set the camera to the viewpoint of the light
-            gl.glLoadIdentity();
+            gl.glLoadIdentity();            
             glu.gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 1, 0);
+            gl.glRotatef(myAngle, 0, 1, 0);
             // get transformation from light's view
             gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, lightMat, 0);
             renderScene(gl, glu, glut);
@@ -224,7 +223,7 @@ public class Shadow extends Scene {
                         // depth at this pixel
                         float viewDepth = viewDepthBuffer.get(y * size.width + x);
                         // do not calculate points past the far plane of frustrum
-                        if (viewDepth < 2) {
+                        if (viewDepth < 1) {
                             // get world coordinate from x, y, depth
                             glu.gluUnProject(x, y, viewDepth, modelMat, 0, 
                                              projectionMat, 0, viewport, 0, objPt, 0);
