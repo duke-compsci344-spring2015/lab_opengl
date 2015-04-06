@@ -183,7 +183,6 @@ public class Shadow extends Scene {
         gl.glPushMatrix(); {
             // set the camera to the viewpoint of the light
             gl.glLoadIdentity();
-            gl.glRotatef(mySceneAngle, 0, 1, 0);
             glu.gluLookAt(lightPos[0], lightPos[1], lightPos[2], 0, 0, 0, 0, 1, 0);
             // draw scene from light's view
             renderScene(gl, glu, glut);
@@ -235,7 +234,7 @@ public class Shadow extends Scene {
                                 // get the depth value from the light
                                 float lightDepth = lightDepthBuffer.get(iy * viewport[2] + ix);
                                 // is something between the light and the pixel?
-                                if (winPt[2] - lightDepth > 0.005) {
+                                if (winPt[2] - lightDepth > 0.002) {
                                     // finally draw over color pixel with shadow
                                     gl.glRasterPos2i(x, y);
                                     gl.glDrawPixels(1, 1, GL2.GL_RGBA, GL2.GL_UNSIGNED_BYTE, SHADOW_COLOR);
